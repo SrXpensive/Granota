@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MarkerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -38,6 +40,17 @@ class Marker
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+
+    /**
+     * @var Collection<int, MarkerNote>
+     */
+    #[ORM\OneToMany(targetEntity: MarkerNote::class, mappedBy: 'marker', cascade: ['persist', 'remove'])]
+    private Collection $markerNotes;
+
+    public function __construct()
+    {
+        $this->markerNotes = new ArrayCollection();
+    }
 
     public function getImage(): ?string
     {
@@ -136,6 +149,36 @@ class Marker
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MarkerNote>
+     */
+    public function getMarkerNotes(): Collection
+    {
+        return $this->markerNotes;
+    }
+
+    public function addMarkerNote(MarkerNote $markerNote): static
+    {
+        if (!$this->markerNotes->contains($markerNote)) {
+            $this->markerNotes->add($markerNote);
+            $markerNote->setMarker($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMarkerNote(MarkerNote $markerNote): static
+    {
+        if ($this->markerNotes->removeElement($markerNote)) {
+            // set the owning side to null (unless already changed)
+            if ($markerNote->getMarker() === $this) {
+                $markerNote->setMarker(null);
+            }
+        }
 
         return $this;
     }

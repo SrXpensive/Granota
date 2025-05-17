@@ -35,9 +35,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Marker::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $markers;
 
+    /**
+     * @var Collection<int, MarkerNote>
+     */
+    #[ORM\OneToMany(targetEntity: MarkerNote::class, mappedBy: 'author')]
+    private Collection $markerNotes;
+
     public function __construct()
     {
         $this->markers = new ArrayCollection();
+        $this->markerNotes = new ArrayCollection();
     }
 
     public function getUserIdentifier(): string
@@ -93,7 +100,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
     }
 
     public function setRoles(array $roles): static
@@ -127,6 +136,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($marker->getUser() === $this) {
                 $marker->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MarkerNote>
+     */
+    public function getMarkerNotes(): Collection
+    {
+        return $this->markerNotes;
+    }
+
+    public function addMarkerNote(MarkerNote $markerNote): static
+    {
+        if (!$this->markerNotes->contains($markerNote)) {
+            $this->markerNotes->add($markerNote);
+            $markerNote->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMarkerNote(MarkerNote $markerNote): static
+    {
+        if ($this->markerNotes->removeElement($markerNote)) {
+            // set the owning side to null (unless already changed)
+            if ($markerNote->getAuthor() === $this) {
+                $markerNote->setAuthor(null);
             }
         }
 
