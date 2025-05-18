@@ -8,6 +8,7 @@
 <script>
 import MapView from '@/components/MapView.vue'
 import MarkerForm from '@/components/MarkerForm.vue'
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'MapAndForm',
@@ -19,22 +20,26 @@ export default {
       clickedLatLng: null
     }
   },
+  computed: {
+    ...mapGetters('auth', ['getToken', 'isAuthenticated', 'getUser'])
+  },
   methods: {
     async fetchMarkers(){
-      const token = localStorage.getItem('token');
       try {
         const response = await fetch('http://localhost:8000/api/markers', {
           method: 'GET',
           headers: {
             'Content-type':'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${this.getToken}`
           }
         });
+
         if(!response.ok){
           throw new Error('Error al carregar els marcadors');
         }
-        const data = await response.json();
-        this.markers = data;
+
+        this.markers = await response.json();
+
       }catch(e){
         console.error(e.message)
       }
@@ -45,8 +50,7 @@ export default {
       this.showForm = true
     },
     async saveMarker(markerData){
-      const token = localStorage.getItem('token');
-
+  
       const formData = new FormData();
       formData.append('title', markerData.title);
       formData.append('description', markerData.description);
@@ -63,7 +67,7 @@ export default {
         const response = await fetch('http://localhost:8000/api/markers',{
           method: 'POST',
           headers: {
-            'Authorization':`Bearer ${token}`
+            'Authorization':`Bearer ${this.getToken}`
           },
           body: formData,
           credentials: 'include'

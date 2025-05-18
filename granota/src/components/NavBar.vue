@@ -3,13 +3,17 @@
         <h3><router-link to="/home/dashboard">Dashboard</router-link></h3>
         <router-link to="/home/perfil">Perfil </router-link>
         <router-link to="/home/map">Mapa </router-link>
+        <router-link v-if="isAdmin" to="/home/admin">Panel d'Administrador</router-link>
         <button @click="handleLogout">Tancar sessió</button>
     </nav>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 export default {
+    computed:{
+        ...mapGetters('auth',['isAdmin'])
+    },
     methods: {
         ...mapActions('auth',['logout']),
         async handleLogout(){

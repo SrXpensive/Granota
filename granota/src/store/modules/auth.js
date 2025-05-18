@@ -17,7 +17,7 @@ const mutations = {
 }
 
 const actions = {
-    async login({commit},{email,password}){
+    async login({commit, dispatch},{email,password}){
         const response = await fetch('http://localhost:8000/api/login',{
             method: 'POST',
             headers: {
@@ -34,8 +34,26 @@ const actions = {
 
         localStorage.setItem('token', data.token);
         commit('setToken', data.token);
-    },
 
+        await dispatch('fetchUser')
+    },
+    async fetchUser({commit, state}){
+        if(!state.token) return;
+
+        const response = await fetch('http://localhost:8000/api/profile',{
+            headers: {
+                Authorization: `Bearer ${state.token}`
+            }
+        });
+
+        if(!response.ok){
+            commit('logout');
+            return;
+        }
+
+        const data = await response.json();
+        commit('setUser', data);
+    },
     logout({commit}){
         localStorage.removeItem('token');
         commit('logout');
@@ -45,7 +63,10 @@ const actions = {
 const getters = {
     isAuthenticated: (state) => !!state.token,
     getUser: (state) => state.user,
-    getToken: (state) => state.token
+    getToken: (state) => state.token,
+    isAdmin: (state) => {
+        return state.user && state.user.roles.includes('ROLE_ADMIN');
+    }
 };
 
 export default {

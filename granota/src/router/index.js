@@ -27,6 +27,12 @@ const routes = [
         path: 'perfil',
         name: 'perfil',
         component: () => import('@/components/ProfileView.vue')
+      },
+      {
+        path: 'admin',
+        name: 'AdminUser',
+        component: () => import('@/components/AdminUser.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true}
       }
     ]
   },
@@ -49,16 +55,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next)=>{
   const isAuth = store.getters['auth/isAuthenticated']
+  const isAdmin = store.getters['auth/isAdmin']
 
   if(to.matched.some(record => record.meta.requiresAuth)){
     if(!isAuth){
       next('/login')
-    }else{
-      next()
     }
-  }else{
-    next()
+    
+    if(to.matched.some(record => record.meta.requiresAdmin)){
+      if(!isAdmin){
+        return next('/home')
+      }
+    }
+    
+    return next()
   }
+  return next()
 })
 
 export default router
