@@ -12,9 +12,9 @@
                     <label class="text-gray-600 font-semibold">Correu electrònic: </label>
                     <p class="text-lg text-gray-800">{{ user.email }}</p>
                 </div>
-                <div v-if="user.roles && user.roles.length">
+                <div v-if="readableRoles.length">
                     <label class="text-gray-600 font-semibold">Rols:</label>
-                    <p class="text-lg text-gray-800">{{ user.roles.join(', ') }}</p>
+                    <p class="text-lg text-gray-800">{{ readableRoles.join(', ') }}</p>
                 </div>
             </div>
         </div>
@@ -30,7 +30,17 @@ export default {
                 nickname: '',
                 email: '',
                 roles: []
+            },
+            rolenames: {
+                ROLE_USER: 'Usuari',
+                ROLE_ADMIN: 'Administrador',
+                ROLE_REVISOR: 'Colaborador'
             }
+        }
+    },
+    computed: {
+        readableRoles(){
+            return this.user.roles.map(role => this.rolenames[role] || role)
         }
     },
     async created(){
