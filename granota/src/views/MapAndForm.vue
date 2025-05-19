@@ -1,23 +1,27 @@
 <template>
   <div class="relative">
-    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" />
+    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" @viewPost="openPost"/>
     <MarkerForm :visible="showForm" :latlng="clickedLatLng" @submit="saveMarker" @close="showForm = false"/>
+    <PostView :visible="showPostView" :marker="selectedPost" :token="getToken" :user="getUser" @close="showPostView = false"/>
   </div>
 </template>
 
 <script>
 import MapView from '@/components/MapView.vue'
 import MarkerForm from '@/components/MarkerForm.vue'
+import PostView from '@/components/PostView.vue'
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'MapAndForm',
-  components: {MapView, MarkerForm},
+  components: {MapView, MarkerForm, PostView},
   data(){
     return {
       markers: [],
       showForm: false,
-      clickedLatLng: null
+      clickedLatLng: null,
+      selectedMarker: null,
+      showPostView: false
     }
   },
   computed: {
@@ -84,6 +88,10 @@ export default {
       }catch(e){
         console.log(e.message)
       }
+    },
+    openPost(marker){
+      this.selectedPost = marker;
+      this.showPostView = true;
     }
   },
   mounted(){

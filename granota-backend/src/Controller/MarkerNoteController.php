@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class MarkerNoteController extends AbstractController
 {
-    #[Route('/marker/note', name: 'app_marker_note')]
+    #[Route('/marker/notes', name: 'app_marker_note')]
     public function index(): JsonResponse
     {
         return $this->json([
@@ -23,7 +23,7 @@ final class MarkerNoteController extends AbstractController
         ]);
     }
 
-    #[Route('/api/markers/{id}/note', name: 'marker_add_note', methods: ['POST'])]
+    #[Route('/api/markers/{id}/notes', name: 'marker_add_note', methods: ['POST'])]
     #[IsGranted('ROLE_REVISOR')]
     public function addNote(Marker $marker, Request $request, EntityManagerInterface $em, Security $security): JsonResponse
     {
