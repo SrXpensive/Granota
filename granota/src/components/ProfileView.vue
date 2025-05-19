@@ -13,8 +13,8 @@
                     <p class="text-lg text-gray-800">{{ user.email }}</p>
                 </div>
                 <div v-if="readableRoles.length">
-                    <label class="text-gray-600 font-semibold">Rols:</label>
-                    <p class="text-lg text-gray-800">{{ readableRoles.join(', ') }}</p>
+                    <label class="text-gray-600 font-semibold">Rol:</label>
+                    <p class="text-lg text-gray-800">{{ readableRoles[0] }}</p>
                 </div>
             </div>
         </div>
@@ -40,13 +40,15 @@ export default {
     },
     computed: {
         readableRoles(){
-            return this.user.roles.map(role => this.rolenames[role] || role)
+            if(!this.user.roles.length) return [];
+            const firstRole = this.user.roles[0];
+            return [this.rolenames[firstRole]]
         }
     },
     async created(){
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8000/api/profile',{
+            const response = await fetch(`http://localhost:8000/api/profile`,{
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

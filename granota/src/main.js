@@ -5,4 +5,8 @@ import store from './store'
 import './assets/tailwind.css'
 import 'leaflet/dist/leaflet.css'
 
-createApp(App).use(store).use(router).mount('#app')
+const app = createApp(App)
+
+store.dispatch('auth/initAuth').then(()=>{
+    app.use(store).use(router).mount('#app')
+})

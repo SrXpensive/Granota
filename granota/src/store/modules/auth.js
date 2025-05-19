@@ -18,7 +18,8 @@ const mutations = {
 
 const actions = {
     async login({commit, dispatch},{email,password}){
-        const response = await fetch('http://localhost:8000/api/login',{
+        
+        const response = await fetch(`http://localhost:8000/api/login`,{
             method: 'POST',
             headers: {
                 'Content-type':'application/json'
@@ -38,9 +39,10 @@ const actions = {
         await dispatch('fetchUser')
     },
     async fetchUser({commit, state}){
+        
         if(!state.token) return;
 
-        const response = await fetch('http://localhost:8000/api/profile',{
+        const response = await fetch(`http://localhost:8000/api/profile`,{
             headers: {
                 Authorization: `Bearer ${state.token}`
             }
@@ -57,6 +59,13 @@ const actions = {
     logout({commit}){
         localStorage.removeItem('token');
         commit('logout');
+    },
+    initAuth({commit, dispatch}){
+        const token = localStorage.getItem('token');
+        if(token){
+            commit('setToken', token);
+            return dispatch('fetchUser')
+        }
     }
 };
 

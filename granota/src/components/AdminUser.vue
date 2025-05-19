@@ -1,38 +1,38 @@
 <template>
-    <div class="p-4">
-        <h2 class="text-xl font-bold mb-4">Administració d'Usuaris</h2>
+    <div class="min-h-screen bg-gradient-to-b from-green-100 via-green-50 to-white p-6">
+        <h2 class="text-3xl font-bold text-green-800 mb-6 text-center">Administració d'Usuaris</h2>
 
-        <div v-if="loading">Cargando usuarios...</div>
+        <div v-if="loading" class="text-green-700 text-center">Carregant usuaris...</div>
         <div v-else>
-            <table class="min-w-full border">
-                <thead>
+            <table class="min-w-full bg-white shadow-md rounded-xl overflow-hidden">
+                <thead class="bg-green-200 text-green-900">
                     <tr>
                         <th class="border p-2">ID</th>
                         <th class="border p-2">Nickname</th>
-                        <th class="border p-2">Roles</th>
-                        <th class="border p-2">Acciones</th>
+                        <th class="border p-2">Rol</th>
+                        <th class="border p-2">Accions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user in users" :key="user.id">
+                    <tr v-for="user in users" :key="user.id" class="border-b hover:bg-green-50 transition">
                         <td class="border p-2">{{ user.id }}</td>
                         <td class="border p-2">{{ user.nickname }}</td>
                         <td class="border p-2">
-                            <select v-model="user.roles" class="border rounded p-1">
+                            <select v-model="user.roles[0]" class="border border-green-300 rounded-lg px-2 py-1 bg-white text-green-800">
                                 <option value="ROLE_USER">Usuari</option>
                                 <option value="ROLE_ADMIN">Admin</option>
                                 <option value="ROLE_REVISOR">Colaborador</option>
                             </select>
                         </td>
-                        <td class="border p-2 space-x-2">
-                            <button @click="updateUser(user)" class="bg-blue-500 text-white px-2 py-1 rounded">Guardar</button>
-                            <button @click="deleteUser(user.id)" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</button>
+                        <td class="px-4 py-2 space-x-2">
+                            <button @click="updateUser(user)" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg shadow transition">Guardar</button>
+                            <button @click="deleteUser(user.id)" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg shadow transition">Eliminar</button>
                         </td>
                     </tr>  
                 </tbody>
             </table>
         </div>
-        <div v-if="error" class="mt-4 text-red-600">{{ error }}</div>
+        <div v-if="error" class="mt-6 text-center text-red-600 font-semibold">{{ error }}</div>
     </div>
 </template>
 
@@ -56,7 +56,7 @@ export default{
             this.loading = true
             this.error = null
             try{
-                const res = await fetch('http://localhost:8000/api/admin/users', {
+                const res = await fetch(`http://localhost:8000/api/admin/users`, {
                     headers: {
                         'Authorization': `Bearer ${this.getToken}`
                     }
@@ -66,7 +66,7 @@ export default{
                 const data = await res.json();
                 this.users = data.map(user =>({
                     ...user,
-                    roles: user.roles[0] || 'ROLE_USER'
+                    roles: user.roles.length ? [...user.roles] : ["ROLE_USER"]
                 }))
             }catch(e){
                 this.error = e.message
@@ -83,7 +83,7 @@ export default{
                         'Authorization': `Bearer ${this.getToken}`
                     },
                     body: JSON.stringify({
-                        roles: user.roles
+                        roles: [user.roles[0]]
                     })
                 })
             

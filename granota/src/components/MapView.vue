@@ -53,7 +53,7 @@
             return {
                 center: [39.070946540300426, -0.266371446900382],
                 tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                tileAttribution: "OpenStreetMap contributors"
+                tileAttribution: "OpenStreetMap contributors",
             }
         },
         methods: {

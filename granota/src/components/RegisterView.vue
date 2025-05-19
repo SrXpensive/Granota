@@ -28,9 +28,10 @@ export default {
     },
     methods: {
         async handleRegister(){
+            
             this.error = null;
             try{
-                const response = await fetch('http://localhost:8000/api/register', {
+                const response = await fetch(`http://localhost:8000/api/register`, {
                     method: 'POST',
                     headers : {'Content-type': 'application/json'},
                     body: JSON.stringify({

@@ -26,7 +26,7 @@ export default {
   methods: {
     async fetchMarkers(){
       try {
-        const response = await fetch('http://localhost:8000/api/markers', {
+        const response = await fetch(`http://localhost:8000/api/markers`, {
           method: 'GET',
           headers: {
             'Content-type':'application/json',
@@ -50,7 +50,6 @@ export default {
       this.showForm = true
     },
     async saveMarker(markerData){
-  
       const formData = new FormData();
       formData.append('title', markerData.title);
       formData.append('description', markerData.description);
@@ -64,7 +63,7 @@ export default {
       }
       
       try {
-        const response = await fetch('http://localhost:8000/api/markers',{
+        const response = await fetch(`http://localhost:8000/api/markers`,{
           method: 'POST',
           headers: {
             'Authorization':`Bearer ${this.getToken}`
