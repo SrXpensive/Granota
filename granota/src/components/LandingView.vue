@@ -15,11 +15,14 @@
             <span class="font-bold">A</span>igua
         </p>
         <div class="flex flex-col md:flex-row gap-4">
-            <router-link to="/register" class="px-6 py-3 bg-green-600 text-white rounded-xl text-lg font-semibold hover:bg-green-700 transition shadow-lg">
+            <router-link to="/register" class="px-6 py-3 bg-green-600 text-white rounded-xl text-lg font-semibold hover:bg-green-700 transition shadow-lg active:scale-95 hover:scale-105">
                 Regístra't
             </router-link>
-            <router-link to="/login" class="px-6 py-3 bg-white text-green-600 border border-green-600 rounded-xl text-lg font-semibold hover:bg-green-100 transition shadow-lg">
+            <router-link to="/login" class="px-6 py-3 bg-white text-green-600 border border-green-600 rounded-xl text-lg font-semibold hover:bg-green-100 transition shadow-lg active:scale-95 hover:scale-105">
                 Inicia sessió
+            </router-link>
+            <router-link to="/guest" class="px-6 py-3 bg-yellow-100 text-green-800 border border-yellow-300 rounded-xl text-lg font-semibold hover:bg-yellow-200 transition shadow-lg active:scale-95 hover:scale-105">
+                Consulta els marcadors!
             </router-link>
         </div>
     </div>

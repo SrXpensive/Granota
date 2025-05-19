@@ -3,7 +3,7 @@
         style="height: 100vh; width: 100vw; z-index: 0;" 
         :zoom="15" 
         :center="center" 
-        @click="handleMapClick">
+        @click="isClickable">
             <l-tile-layer
                 :url="tileUrl"
                 :attribution="tileAttribution"
@@ -41,7 +41,13 @@
 
     export default{
         name: "MapView",
-        props: ['markers'],
+        props: {
+            markers:Array,
+            allowClick: {
+                type: Boolean,
+                default: true
+            }
+        },
         emits: ['mapClick'],
         components: {
             LMap,
@@ -60,6 +66,11 @@
             handleMapClick(event){
                 const { latlng } = event;
                 this.$emit("mapClick", latlng)
+            },
+            isClickable(event){
+                if(this.allowClick){
+                    this.handleMapClick(event)
+                }
             }
         }
     }

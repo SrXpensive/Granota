@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <MapView :markers="markers" @mapClick="onMapClick" />
+    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" />
     <MarkerForm :visible="showForm" :latlng="clickedLatLng" @submit="saveMarker" @close="showForm = false"/>
   </div>
 </template>
