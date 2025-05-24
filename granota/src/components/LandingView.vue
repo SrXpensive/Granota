@@ -22,7 +22,7 @@
                 Inicia sessió
             </router-link>
             <router-link to="/guest" class="px-6 py-3 bg-yellow-100 text-green-800 border border-yellow-300 rounded-xl text-lg font-semibold hover:bg-yellow-200 transition shadow-lg active:scale-95 hover:scale-105">
-                Consulta els marcadors!
+                Visita el riu!
             </router-link>
         </div>
     </div>

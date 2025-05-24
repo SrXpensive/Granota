@@ -23,7 +23,7 @@
                     <strong>{{ marker.title }}</strong><br/>
                     {{ marker.description }}
                     <div class="mt-2 text-right">
-                        <button @click="$emit('viewPost', marker)" class="text-sm text-blue-600 underline">Veure més</button>
+                        <button @click.stop="$emit('viewPost', marker)" class="text-sm text-blue-600 underline">Veure més</button>
                     </div>
                 </l-popup>
             </l-marker>

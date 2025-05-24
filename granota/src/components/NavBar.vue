@@ -1,5 +1,5 @@
 <template>
-    <nav class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-green-100 via-green-50 to-green-100 border-b-4 border-green-600 shadow-md rounded-b-xl">
+    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 bg-gradient-to-r from-green-100 via-green-50 to-green-100 border-b-4 border-green-600 shadow-md rounded-b-xl">
         <div class="flex gap-8 text-green-900 font-semibold text-lg">
             <router-link to="/home/dashboard" class="relative group">
                 Dashboard

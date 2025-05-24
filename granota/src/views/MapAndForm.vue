@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative pt-20">
     <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" @viewPost="openPost"/>
     <MarkerForm :visible="showForm" :latlng="clickedLatLng" @submit="saveMarker" @close="showForm = false"/>
     <PostView :visible="showPostView" :marker="selectedPost" :token="getToken" :user="getUser" @close="showPostView = false"/>

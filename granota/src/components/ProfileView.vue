@@ -4,6 +4,12 @@
             <h2 class="text-3xl font-bold text-green-700 mb-6 text-center">Perfil d'Usuari</h2>
 
             <div class="space-y-4">
+                <div class="flex flex-col items-center mb-4">
+                    <label class="text-gray-600 font-semibold">Avatar </label>
+                    <img :src="user.avatar ? `http://localhost:8000/${user.avatar}` : '/img/default-avatar.jpg'" alt="Avatar" class="w-32 h-32 rounded-full object-cover border"/>
+                    Editar avatar:
+                    <input type="file" @change="uploadAvatar" class="mt-2"/>
+                </div>
                 <div>
                     <label class="text-gray-600 font-semibold">Nom d'usuari: </label>
                     <p class="text-lg text-gray-800">{{ user.nickname }}</p>
@@ -29,7 +35,8 @@ export default {
             user: {
                 nickname: '',
                 email: '',
-                roles: []
+                roles: [],
+                avatar: null
             },
             rolenames: {
                 ROLE_USER: 'Usuari',
@@ -62,6 +69,32 @@ export default {
             this.user = data;
         }catch(e){
             console.error(e.message)
+        }
+    },
+    methods:{
+        async uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('avatar', file);
+
+            const token = localStorage.getItem('token');
+
+            const response = await fetch(`http://localhost:8000/api/profile/avatar`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.user.avatar = data.avatar;
+            } else {
+                console.error('Error al subir avatar');
+            }
         }
     }
 }

@@ -5,20 +5,24 @@
         </router-link>
         <h2 class="text-2xl font-bold text-green-800 text-center">Explora els marcadors</h2>
     </div>
-    <MapView :markers="markers" :allowClick="false"/>
+    
+    <MapView :markers="markers" :allowClick="isAuthenticated"/>
 </template>
 
 <script>
     import MapView from '@/components/MapView.vue'
-
+    import { mapGetters } from 'vuex'
     export default{
         components:{
             MapView
         },
         data(){
             return {
-                markers: []
+                markers: [],
             }
+        },
+        computed: {
+            ...mapGetters('auth', ['isAuthenticated'])
         },
         async mounted(){
             try{
