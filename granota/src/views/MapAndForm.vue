@@ -1,6 +1,6 @@
 <template>
   <div class="relative pt-20">
-    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" @viewPost="openPost"/>
+    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" @viewPost="openPost" @delete="handleDeleteMarker" :user="getUser"/>
     <MarkerForm :visible="showForm" :latlng="clickedLatLng" @submit="saveMarker" @close="showForm = false"/>
     <PostView :visible="showPostView" :marker="selectedPost" :token="getToken" :user="getUser" @close="showPostView = false"/>
   </div>
@@ -93,7 +93,26 @@ export default {
     openPost(marker){
       this.selectedPost = marker;
       this.showPostView = true;
+    },
+    async handleDeleteMarker(marker){
+      if(!confirm('Estàs segur de voler eliminar aquest marcador?')){
+        return;
+      }
+      try{
+        const response = await fetch(`http://localhost:8000/api/markers/${marker.id}`,{
+          method: 'DELETE',
+          headers: {
+            'Authorization':`Bearer ${this.getToken}`
+          }
+        })
+        if(!response.ok) throw new Error('Error al eliminar marcador');
+
+        this.markers = this.markers.filter(m => m.id !== marker.id)
+      }catch(error){
+        console.error(error.message);
+      }
     }
+    
   },
   mounted(){
     setTimeout(()=>{

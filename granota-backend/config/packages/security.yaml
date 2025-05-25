@@ -54,6 +54,9 @@ security:
         # Permitir veure un marcador
         - { path: ^/api/markers/\d+$, roles: PUBLIC_ACCESS, methods: [GET]}
 
+        #Ruta pública per a poder veure els comentaris de les publicacions
+        - { path: ^/api/markers/\d+/notes$, roles: PUBLIC_ACCESS, methods: [GET]}
+        
         # Crear marcadors (Sols autenticats)
         - { path: ^/api/markers$, roles: ROLE_USER, methods: [POST] }
 
@@ -61,7 +64,7 @@ security:
         - { path: ^/api/markers/\d+$, roles: ROLE_USER, methods: [PUT, DELETE]}
 
         # Sols revisors poden afegir notes
-        - { path: ^/api/markers/\d+/note$, roles: ROLE_REVISOR, methods: [POST] }
+        - { path: ^/api/markers/\d+/notes$, roles: ROLE_REVISOR, methods: [POST] }
 
         # Usuaris autenticats poden accedir al perfil
         - { path: ^/api/profile, roles: IS_AUTHENTICATED_FULLY }

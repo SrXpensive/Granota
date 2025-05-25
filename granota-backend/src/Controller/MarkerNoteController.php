@@ -43,6 +43,37 @@ final class MarkerNoteController extends AbstractController
         $em->persist($note);
         $em->flush();
 
-        return new JsonResponse(['message' => 'Nota afegida correctament'], 201);
+        return new JsonResponse([
+            'id' => $note->getId(),
+            'note' => $note->getNote(),
+            'createdAt' => $note->getCreatedAt()->format('Y-m-d H:i:s'),
+            'user' => [
+                'id' => $note->getAuthor()->getId(),
+                'nickname' => $note->getAuthor()->getNickname()
+            ]
+        ], 201);
     }
+
+    #[Route('/api/markers/{id}/notes', name: 'marker_get_notes', methods: ['GET'])]
+    public function getNotes(Marker $marker): JsonResponse
+    {
+        $notes = $marker->getMarkerNotes();
+        $data = [];
+
+        foreach ($notes as $note) {
+            $author = $note->getAuthor();
+            $data[] = [
+                'id' => $note->getId(),
+                'note' => $note->getNote(),
+                'createdAt' => $note->getCreatedAt()->format('Y-m-d H:i:s'),
+                'user' => [
+                    'id' => $author?->getId(),
+                    'nickname' => $author?->getNickname()
+                ]
+            ];
+        }
+
+        return new JsonResponse($data, 200);
+    }
+
 }

@@ -16,7 +16,7 @@
                     <div v-if="comments.length === 0" class="text-gray-500">Encara no hi ha comentaris.</div>
                     <ul class="space-y-2">
                         <li v-for="(comment,index) in comments" :key="index" class="border-b pb-2">
-                            <strong>{{ comment.user.nickname }}</strong>: {{ comment.content }}
+                            <strong>{{ comment.user.nickname }}</strong>: {{ comment.note }}
                         </li>
                     </ul>
 
@@ -42,7 +42,6 @@
             visible: Boolean,
             marker: Object,
             user: Object,
-            token: String
         },
         data(){
             return {
@@ -51,7 +50,10 @@
             }
         },
         computed:{
-            ...mapGetters('auth',['isAuthenticated', 'user']),
+            ...mapGetters('auth',{
+                isAuthenticated:'isAuthenticated',
+                user: 'getUser',
+                token: 'getToken'}),
             canComment(){
                 return this.user && (this.user.roles.includes('ROLE_REVISOR') || this.user.roles.includes('ROLE_ADMIN'))
             }
@@ -71,9 +73,12 @@
                 try {
                     const res = await fetch(`http://localhost:8000/api/markers/${markerId}/notes`,{
                         headers: {
-                            Authorization: `Bearer ${this.token}`
+                            'Content-type':'application/json',
+                            ...(this.token ? {'Authorization': `Bearer ${this.token}`}:{})
                         }
                     })
+                    if(!res.ok) throw new Error("No s'han pogut carregar els comentaris")
+
                     this.comments = await res.json();
                 }catch(e){
                     console.error("Error carregant els comentaris", e)
@@ -83,7 +88,7 @@
                 if(!this.newComment.trim()) return;
 
                 try{
-                    const res = await fetch(`http://localhost:8000/api/notes`,{
+                    const res = await fetch(`http://localhost:8000/api/markers/${this.marker.id}/notes`,{
                         method: 'POST',
                         headers: {
                             'Content-type':'application/json',

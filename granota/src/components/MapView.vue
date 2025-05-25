@@ -9,21 +9,26 @@
                 :attribution="tileAttribution"
                 />
             <l-marker
-                v-for="(marker,index) in markers"
-                :key="index"
+                v-for="marker in markers"
+                :key="marker.id"
                 :lat-lng="[marker.lat, marker.lng]"
             >
                 <l-popup>
+                    {{ console.log(marker.id) }}
                     <img
                         v-if="marker.image"
                         :src="`http://localhost:8000/uploads/${marker.image}`"
                         alt="Imagen del marcador"
-                        class="mt-2 max-h-32 object-cover rounded"
+                        class="mt-2 max-h-64 object-cover rounded"
                     />
                     <strong>{{ marker.title }}</strong><br/>
+                    {{console.log(marker.id)}}
                     {{ marker.description }}
-                    <div class="mt-2 text-right">
-                        <button @click.stop="$emit('viewPost', marker)" class="text-sm text-blue-600 underline">Veure més</button>
+                    <div class="mt-4 flex justify-center space-x-6">
+                        <font-awesome-icon @click.stop="$emit('viewPost', marker)" icon="eye" class="cursor-pointer hover:text-blue-800 text-blue-600" title="Veure més" style="font-size: 1.8rem;"/>
+                    
+                        <font-awesome-icon v-if="user && (marker.userId === user.id || user.roles.includes('ROLE_ADMIN'))" 
+                         @click.stop="$emit('delete', marker)" icon="times" class="cursor-pointer text-red-600 hover:text-red-800 ml-3" title="Eliminar marcador" style="font-size: 1.8rem;"/>
                     </div>
                 </l-popup>
             </l-marker>
@@ -34,6 +39,7 @@
     import {LMap, LTileLayer, LMarker, LPopup} from "@vue-leaflet/vue-leaflet"
     import "leaflet/dist/leaflet.css";
     import L from "leaflet";
+    import {mapGetters} from 'vuex'
 
     delete L.Icon.Default.prototype._getIconUrl;
     L.Icon.Default.mergeOptions({
@@ -43,15 +49,20 @@
     });
 
     export default{
+        
         name: "MapView",
         props: {
             markers:Array,
             allowClick: {
                 type: Boolean,
                 default: true
-            }
+            },
+            user: Object
         },
-        emits: ['mapClick', 'viewPost'],
+        computed: {
+            ...mapGetters('auth',['getUser'])
+        },
+        emits: ['mapClick', 'viewPost', 'delete'],
         components: {
             LMap,
             LTileLayer,

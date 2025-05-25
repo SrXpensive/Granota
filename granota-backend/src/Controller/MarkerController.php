@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Species;
 use App\Entity\Marker;
+use App\Entity\User;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,6 +70,7 @@ final class MarkerController extends AbstractController
             'description' => $marker->getDescription(),
             'image' => $marker->getImage(),
             'user' => $marker->getUser()->getNickname(),
+            'userId' => $marker->getUser()->getId(),
             'species' => $marker->getSpecies() ? $marker->getSpecies()->getCommonName(): null
         ]);
     }
@@ -88,6 +90,7 @@ final class MarkerController extends AbstractController
                 'description' => $marker->getDescription(),
                 'image' => $marker->getImage(),
                 'user' => $marker->getUser()->getNickname(),
+                'userId' => $marker->getUser()->getId(),
                 'species' => $marker->getSpecies() ? $marker->getSpecies()->getCommonName(): null
             ];
         }
@@ -112,6 +115,7 @@ final class MarkerController extends AbstractController
             'description' => $marker->getDescription(),
             'image' => $marker->getImage(),
             'user' => $marker->getUser()->getNickname(),
+            'userId' => $marker->getUser()->getId(),
             'species' => $marker->getSpecies() ? $marker->getSpecies()->getCommonName(): null
         ]);
     }
@@ -156,6 +160,11 @@ final class MarkerController extends AbstractController
 
         if(!$marker){
             return $this->json(['error'=>'Marcador no trovat'], 404);
+        }
+        /** @var User $user */
+        $user = $this->getUser();
+        if($marker->getUser()->getId() !== $user->getId() && !in_array('ROLE_ADMIN', $user->getRoles())){
+            return $this->json(['error'=>'No tens permisos per eliminar aquest marcador']);
         }
 
         $entityManager->remove($marker);
