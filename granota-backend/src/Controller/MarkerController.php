@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Species;
 use App\Entity\Marker;
 use DateTime;
 use DateTimeImmutable;
@@ -46,6 +47,16 @@ final class MarkerController extends AbstractController
             }
         }
 
+        $speciesId = $request->request->get('species');
+        if ($speciesId) {
+            $species = $entityManager->getRepository(Species::class)->find($speciesId);
+            if ($species) {
+                $marker->setSpecies($species);
+            } else {
+                return $this->json(['error' => 'Espècie no trobada'], 400);
+            }
+        }
+
         $entityManager->persist($marker);
         $entityManager->flush();
 
@@ -57,7 +68,8 @@ final class MarkerController extends AbstractController
             'title' => $marker->getTitle(),
             'description' => $marker->getDescription(),
             'image' => $marker->getImage(),
-            'user' => $marker->getUser()->getNickname()
+            'user' => $marker->getUser()->getNickname(),
+            'species' => $marker->getSpecies() ? $marker->getSpecies()->getCommonName(): null
         ]);
     }
 
@@ -75,7 +87,8 @@ final class MarkerController extends AbstractController
                 'title' => $marker->getTitle(),
                 'description' => $marker->getDescription(),
                 'image' => $marker->getImage(),
-                'user' => $marker->getUser()->getNickname()
+                'user' => $marker->getUser()->getNickname(),
+                'species' => $marker->getSpecies() ? $marker->getSpecies()->getCommonName(): null
             ];
         }
 
@@ -97,7 +110,9 @@ final class MarkerController extends AbstractController
             'lng' => $marker->getLng(),
             'title' => $marker->getTitle(),
             'description' => $marker->getDescription(),
-            'user' => $marker->getUser()->getNickname()
+            'image' => $marker->getImage(),
+            'user' => $marker->getUser()->getNickname(),
+            'species' => $marker->getSpecies() ? $marker->getSpecies()->getCommonName(): null
         ]);
     }
 

@@ -51,7 +51,7 @@
                 default: true
             }
         },
-        emits: ['mapClick'],
+        emits: ['mapClick', 'viewPost'],
         components: {
             LMap,
             LTileLayer,

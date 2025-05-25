@@ -61,6 +61,7 @@ export default {
       formData.append('lat', markerData.lat);
       formData.append('lng',markerData.lng);
       formData.append('image', markerData.image);
+      formData.append('species', markerData.speciesId);
 
       for(let pair of formData.entries()){
         console.log(pair[0]+'-'+pair[1])

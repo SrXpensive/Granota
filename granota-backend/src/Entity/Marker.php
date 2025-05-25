@@ -47,6 +47,10 @@ class Marker
     #[ORM\OneToMany(targetEntity: MarkerNote::class, mappedBy: 'marker', cascade: ['persist', 'remove'])]
     private Collection $markerNotes;
 
+    #[ORM\ManyToOne(inversedBy: 'markers')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Species $species = null;
+
     public function __construct()
     {
         $this->markerNotes = new ArrayCollection();
@@ -179,6 +183,18 @@ class Marker
                 $markerNote->setMarker(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSpecies(): ?Species
+    {
+        return $this->species;
+    }
+
+    public function setSpecies(?Species $species): static
+    {
+        $this->species = $species;
 
         return $this;
     }

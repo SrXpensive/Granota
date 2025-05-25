@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-6 pt-20">
         <div class="bg-white p-8 rounded-2xl w-full max-w-md animate-fade-in">
             <h2 class="text-3xl font-bold text-green-700 mb-6 text-center">Perfil d'Usuari</h2>
 
@@ -7,7 +7,7 @@
                 <div class="flex flex-col items-center mb-4">
                     <label class="text-gray-600 font-semibold">Avatar </label>
                     <img :src="user.avatar ? `http://localhost:8000/${user.avatar}` : '/img/default-avatar.jpg'" alt="Avatar" class="w-32 h-32 rounded-full object-cover border"/>
-                    Editar avatar:
+                    <p class="text-gray-600 font-semibold">Editar avatar:</p>
                     <input type="file" @change="uploadAvatar" class="mt-2"/>
                 </div>
                 <div>

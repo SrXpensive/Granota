@@ -20,9 +20,14 @@
                         </li>
                     </ul>
 
-                    <div v-if="canComment" class="mt-4">
-                        <textarea v-model="newComment" class="w-full border rounded p-2" placeholder="Escriu un comentari..."></textarea>
-                        <button @click="submitComment" class="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700">Enviar</button>
+                    <div class="mt-4">
+                        <div v-if="isAuthenticated && canComment">
+                            <textarea v-model="newComment" class="w-full border rounded p-2" placeholder="Escriu un comentari..."></textarea>
+                            <button @click="submitComment" class="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700">Enviar</button>
+                        </div>
+                        <div v-else-if="!isAuthenticated" class="text-gray-600 italic">
+                            Inicia sessió per comentar.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,6 +36,7 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex'
     export default{
         props: {
             visible: Boolean,
@@ -45,8 +51,9 @@
             }
         },
         computed:{
+            ...mapGetters('auth',['isAuthenticated', 'user']),
             canComment(){
-                return this.user && this.user.roles.includes('ROLE_REVISOR')
+                return this.user && (this.user.roles.includes('ROLE_REVISOR') || this.user.roles.includes('ROLE_ADMIN'))
             }
         },
         watch:{
@@ -79,7 +86,8 @@
                     const res = await fetch(`http://localhost:8000/api/notes`,{
                         method: 'POST',
                         headers: {
-                            Authorization: `Bearer ${this.token}`
+                            'Content-type':'application/json',
+                            'Authorization': `Bearer ${this.token}`
                         },
                         body: JSON.stringify({
                             marker: this.marker.id,

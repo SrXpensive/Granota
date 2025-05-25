@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-gradient-to-b from-green-100 via-green-50 to-white p-6">
-        <h2 class="text-3xl font-bold text-green-800 mb-6 text-center">Administració d'Usuaris</h2>
+        <h2 class="text-3xl font-bold text-green-800 mb-6 text-center pt-20">Administració d'Usuaris</h2>
 
         <div v-if="loading" class="text-green-700 text-center">Carregant usuaris...</div>
         <div v-else>
