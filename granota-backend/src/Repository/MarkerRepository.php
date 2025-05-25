@@ -16,6 +16,16 @@ class MarkerRepository extends ServiceEntityRepository
         parent::__construct($registry, Marker::class);
     }
 
+    public function findBySpeciesType(string $type): array
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.species', 's')
+            ->where('s.type = :type')
+            ->setParameter('type', $type)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Marker[] Returns an array of Marker objects
     //     */

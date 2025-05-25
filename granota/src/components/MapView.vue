@@ -1,4 +1,19 @@
 <template>
+<div>
+    <button @click="showFilters = !showFilters"
+        class="fixed top-16 left-4 z-50 bg-green-600 text-white px-3 py-1 rounded shadow hover:bg-green-700 transition">
+        {{ showFilters ? 'Ocultar filtre': 'Mostrar filtre'}}
+    </button>
+    <transition name="slide-filters">
+        <div v-if="showFilters" class="w-full bg-green-100 border-b border-green-300 py-3 px-4 shadow-sm">
+            <select v-model="selectedType" @change="emitType" class="mt-2 w-64 rounded-xl border border-green-400 bg-green-50 px-4 py-2 text-green-800 shadow-sm transition-all duration-200 ease-in-out focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 hover:bg-green-100">
+            <option value="">Tots els tipus</option>
+            <option v-for="type in types" :key="type" :value="type">
+                {{ type }}
+            </option>
+            </select>
+        </div>
+    </transition>
     <l-map
         style="height: 100vh; width: 100vw; z-index: 0;" 
         :zoom="15" 
@@ -13,13 +28,13 @@
                 :key="marker.id"
                 :lat-lng="[marker.lat, marker.lng]"
             >
-                <l-popup>
+                <l-popup :max-width="350">
                     {{ console.log(marker.id) }}
                     <img
                         v-if="marker.image"
                         :src="`http://localhost:8000/uploads/${marker.image}`"
                         alt="Imagen del marcador"
-                        class="mt-2 max-h-64 object-cover rounded"
+                        class="mt-2 max-h-96 w-full object-cover rounded"
                     />
                     <strong>{{ marker.title }}</strong><br/>
                     {{console.log(marker.id)}}
@@ -32,7 +47,8 @@
                     </div>
                 </l-popup>
             </l-marker>
-    </l-map>
+        </l-map>
+    </div>
 </template>
 
 <script>
@@ -60,9 +76,9 @@
             user: Object
         },
         computed: {
-            ...mapGetters('auth',['getUser'])
+            ...mapGetters('auth',['getUser','getToken'])
         },
-        emits: ['mapClick', 'viewPost', 'delete'],
+        emits: ['mapClick', 'viewPost', 'delete','type-selected'],
         components: {
             LMap,
             LTileLayer,
@@ -74,7 +90,24 @@
                 center: [39.070946540300426, -0.266371446900382],
                 tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 tileAttribution: "OpenStreetMap contributors",
+                types: [],
+                selectedType: '',
+                showFilters: false
             }
+        },
+        created(){
+            fetch('http://localhost:8000/api/types',{
+                headers: {
+                    'Authorization':`Bearer ${this.getToken}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.types = data;
+                })
+                .catch(error => {
+                    console.error('Error al carregar els tipus:', error)
+                })
         },
         methods: {
             handleMapClick(event){
@@ -85,10 +118,29 @@
                 if(this.allowClick){
                     this.handleMapClick(event)
                 }
-            }
+            },
+            emitType(){
+                this.$emit('type-selected', this.selectedType)
+            },
+            
         }
     }
 </script>
 
 <style scoped>
+.slide-filters-enter-active, .slide-filters-leave-active {
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+.slide-filters-enter-from, .slide-filters-leave-to {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+.slide-filters-enter-to, .slide-filters-leave-from {
+  max-height: 100px; 
+  padding-top: 0.75rem;  
+  padding-bottom: 0.75rem;
+  overflow: hidden;
+}
 </style>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Species;
 use App\Entity\Marker;
 use App\Entity\User;
+use App\Repository\MarkerRepository;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -48,7 +49,7 @@ final class MarkerController extends AbstractController
             }
         }
 
-        $speciesId = $request->request->get('species');
+        $speciesId = $request->request->get('speciesId');
         if ($speciesId) {
             $species = $entityManager->getRepository(Species::class)->find($speciesId);
             if ($species) {
@@ -173,5 +174,36 @@ final class MarkerController extends AbstractController
         return $this->json([
             'message' => 'Marcador eliminat correctament'
         ]);
+    }
+
+    #[Route('/api/markers/by-type/{type}', name: 'api_markers_by_type', methods: ['GET'])]
+    public function getMarkersBySpeciesType(MarkerRepository $markerRepository, string $type): JsonResponse
+    {
+        $markers = $markerRepository->findBySpeciesType($type);
+
+        $data = array_map(function (Marker $marker) {
+            return [
+                'id' => $marker->getId(),
+                'title' => $marker->getTitle(),
+                'description' => $marker->getDescription(),
+                'category' => $marker->getCategory(),
+                'lat' => $marker->getLat(),
+                'lng' => $marker->getLng(),
+                'createdAt' => $marker->getCreatedAt()?->format('Y-m-d H:i:s'),
+                'image' => $marker->getImage(),
+                'user' => $marker->getUser() ? [
+                    'id' => $marker->getUser()->getId(),
+                    'nickname' => $marker->getUser()->getNickname(),
+                    'avatar' => $marker->getUser()->getAvatar(), // si lo tienes
+                ] : null,
+                'species' => $marker->getSpecies() ? [
+                    'id' => $marker->getSpecies()->getId(),
+                    'name' => $marker->getSpecies()->getCommonName(),
+                ] : null,
+            ];
+        }, $markers);
+
+        return $this->json($data);
+    
     }
 }

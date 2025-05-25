@@ -1,6 +1,6 @@
 <template>
   <div class="relative pt-20">
-    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" @viewPost="openPost" @delete="handleDeleteMarker" :user="getUser"/>
+    <MapView :markers="markers" :allowClick="true" @mapClick="onMapClick" @viewPost="openPost" @delete="handleDeleteMarker" :user="getUser" @type-selected="fetchMarkers"/>
     <MarkerForm :visible="showForm" :latlng="clickedLatLng" @submit="saveMarker" @close="showForm = false"/>
     <PostView :visible="showPostView" :marker="selectedPost" :token="getToken" :user="getUser" @close="showPostView = false"/>
   </div>
@@ -20,7 +20,7 @@ export default {
       markers: [],
       showForm: false,
       clickedLatLng: null,
-      selectedMarker: null,
+      selectedPost: null,
       showPostView: false
     }
   },
@@ -28,9 +28,13 @@ export default {
     ...mapGetters('auth', ['getToken', 'isAuthenticated', 'getUser'])
   },
   methods: {
-    async fetchMarkers(){
+    async fetchMarkers(speciesType = null){
       try {
-        const response = await fetch(`http://localhost:8000/api/markers`, {
+        console.log(speciesType)
+        const url = speciesType 
+          ? `http://localhost:8000/api/markers/by-type/${encodeURIComponent(speciesType)}`
+          : `http://localhost:8000/api/markers`;
+        const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-type':'application/json',
@@ -42,8 +46,18 @@ export default {
           throw new Error('Error al carregar els marcadors');
         }
 
-        this.markers = await response.json();
-
+        const data = await response.json();
+        console.log(data)
+        this.markers = data.map(m => ({
+          ...m,
+          lat: parseFloat(m.lat),
+          lng: parseFloat(m.lng)
+        }))
+          .filter(m=>
+            !isNaN(m.lat) &&
+            !isNaN(m.lng)
+          )
+          console.log(this.markers)
       }catch(e){
         console.error(e.message)
       }
@@ -61,7 +75,8 @@ export default {
       formData.append('lat', markerData.lat);
       formData.append('lng',markerData.lng);
       formData.append('image', markerData.image);
-      formData.append('species', markerData.speciesId);
+      console.log(markerData.speciesId)
+      formData.append('speciesId', markerData.speciesId);
 
       for(let pair of formData.entries()){
         console.log(pair[0]+'-'+pair[1])

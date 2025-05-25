@@ -52,7 +52,6 @@
         computed:{
             ...mapGetters('auth',{
                 isAuthenticated:'isAuthenticated',
-                user: 'getUser',
                 token: 'getToken'}),
             canComment(){
                 return this.user && (this.user.roles.includes('ROLE_REVISOR') || this.user.roles.includes('ROLE_ADMIN'))
