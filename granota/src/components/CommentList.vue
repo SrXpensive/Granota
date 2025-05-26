@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-[500px] flex flex-col">
+  <div class="bg-white dark:bg-gray-800 h-[500px] flex flex-col">
     <h2 class="text-2xl font-bold mb-4">Últims comentaris</h2>
     <div v-if="loading">Cargando comentarios...</div>
     <div v-else-if="error" class="error">{{ error }}</div>

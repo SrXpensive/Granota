@@ -1,11 +1,12 @@
 <template>
 <div>
+
     <button @click="showFilters = !showFilters"
         class="fixed top-16 left-4 z-50 bg-green-600 text-white px-3 py-1 rounded shadow hover:bg-green-700 transition">
         {{ showFilters ? 'Ocultar filtre': 'Mostrar filtre'}}
     </button>
     <transition name="slide-filters">
-        <div v-if="showFilters" class="w-full bg-green-100 border-b border-green-300 py-3 px-4 shadow-sm">
+        <div v-if="showFilters" class="w-full bg-green-100 border-b border-green-300 py-3 px-4 shadow-sm z-40">
             <select v-model="selectedType" @change="emitType" class="mt-2 w-64 rounded-xl border border-green-400 bg-green-50 px-4 py-2 text-green-800 shadow-sm transition-all duration-200 ease-in-out focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 hover:bg-green-100">
             <option value="">Tots els tipus</option>
             <option v-for="type in types" :key="type" :value="type">
@@ -14,8 +15,9 @@
             </select>
         </div>
     </transition>
+
     <l-map
-        style="height: 100vh; width: 100vw; z-index: 0;" 
+        style="height: calc(100vh - 5rem); width: 100vw; z-index: 0;" 
         :zoom="15" 
         :center="center" 
         @click="isClickable">
@@ -121,6 +123,7 @@
             },
             emitType(){
                 this.$emit('type-selected', this.selectedType)
+                this.showFilters = false;
             },
             
         }
