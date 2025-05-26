@@ -30,13 +30,13 @@
                 :key="marker.id"
                 :lat-lng="[marker.lat, marker.lng]"
             >
-                <l-popup :max-width="350">
+                <l-popup >
                     {{ console.log(marker.id) }}
                     <img
                         v-if="marker.image"
                         :src="`http://localhost:8000/uploads/${marker.image}`"
                         alt="Imagen del marcador"
-                        class="mt-2 max-h-96 w-full object-cover rounded"
+                        class="w-full object-cover rounded-md mt-2"
                     />
                     <strong>{{ marker.title }}</strong><br/>
                     {{console.log(marker.id)}}

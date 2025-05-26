@@ -94,6 +94,7 @@
                         if(!res.ok) throw new Error('Error al crear espècie');
                         const data = await res.json();
                         finalSpeciesId = data.id;
+                        toast.success('Espècie creada correctament!');
                     }catch(error){
                         console.error(error);
                         return;
@@ -109,6 +110,7 @@
                     image: this.image
                     })
                     this.$emit('close')
+                    toast.success('Marcador guardat correctament!');
                 this.resetForm()
             },
             resetForm(){
