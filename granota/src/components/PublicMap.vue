@@ -43,7 +43,6 @@
                 },
                 async fetchMarkers(speciesType = null){
                     try {
-                        console.log(speciesType)
                         const url = speciesType 
                         ? `http://localhost:8000/api/markers/by-type/${encodeURIComponent(speciesType)}`
                         : `http://localhost:8000/api/markers`;

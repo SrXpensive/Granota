@@ -4,7 +4,7 @@
             <div class="p-4 overflow-y-auto h-full flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold">{{ marker.title }}</h2>
-                    <button @click="$emit('close')" class="text-red-600 hover:text-red-800">&times;</button>
+                    <button @click="$emit('close')" class="text-red-600 hover:text-red-800 text-5xl">&times;</button>
                 </div>
 
                 <img v-if="marker.image" :src="`http://localhost:8000/uploads/${marker.image}`" class="rounded mb-4 max-h-64 object-cover w-full">

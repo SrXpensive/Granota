@@ -30,7 +30,7 @@ const actions = {
         const data = await response.json();
 
         if(!response.ok){
-            throw new Error(data.error || 'Error en el login');
+            throw new Error(data.error || 'Usuario o email incorrectos');
         }
 
         localStorage.setItem('token', data.token);

@@ -34,6 +34,7 @@
 </template>
 
 <script>
+    import { useToast } from 'vue-toastification'
     export default {
         props: ['visible', 'latlng'],
         emits: ['submit', 'close'],
@@ -70,6 +71,11 @@
         },
         methods: {
             async submit(){
+                const toast = useToast();
+                if(!this.speciesId || this.speciesId === ''){
+                    toast.error('Has de seleccionar una espècie abans de guardar.');
+                    return;
+                }
                 let finalSpeciesId = this.speciesId;
                 
                 if(this.speciesId === 'new'){
