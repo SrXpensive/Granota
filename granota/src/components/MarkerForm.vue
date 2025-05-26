@@ -74,7 +74,7 @@
                 
                 if(this.speciesId === 'new'){
                     try{
-                        const res = await fetch('http://localhost:8080/api/species',{
+                        const res = await fetch('http://localhost:8000/api/species',{
                             method: 'POST',
                             headers: {
                                 'Content-type':'application/json',

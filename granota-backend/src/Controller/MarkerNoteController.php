@@ -82,7 +82,7 @@ final class MarkerNoteController extends AbstractController
     public function getAllNotes(EntityManagerInterface $em): JsonResponse
     {
         $notes = $em->getRepository(MarkerNote::class)
-            ->findBy([], ['createdAt' => 'DESC']);  // Orden descendente por fecha
+            ->findBy([], ['createdAt' => 'DESC']);  
 
         $data = [];
 
