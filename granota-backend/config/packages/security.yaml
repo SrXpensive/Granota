@@ -48,6 +48,8 @@ security:
         - { path: ^/api/login$, roles: PUBLIC_ACCESS }
         - { path: ^/api/register$, roles: PUBLIC_ACCESS }
 
+        - { path: ^/api/markers/by-type, roles: PUBLIC_ACCESS }
+        
         # Llistar tots els marcadors
         - { path: ^/api/markers$, roles: PUBLIC_ACCESS, methods: [GET]}
 
@@ -71,7 +73,10 @@ security:
 
         # Sols administradors
         - { path: ^/api/admin, roles: ROLE_ADMIN }
-        
+
+         # Ruta pública per a poder veure els tipus
+        - { path: ^/api/types$, roles: PUBLIC_ACCESS, methods: [GET] }
+
         # Qualsevol altra ruta a la api requereix autenticació
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 

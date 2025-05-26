@@ -132,8 +132,7 @@ export default {
   mounted(){
     setTimeout(()=>{
       this.fetchMarkers()
-    },0)
-    ;
+    },0);
   }
 }
 </script>

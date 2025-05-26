@@ -98,10 +98,15 @@
             }
         },
         created(){
+            const headers = {'Content-type':'application/json'}
+
+            if (this.isAuthenticated && this.getToken) {
+                headers['Authorization'] = `Bearer ${this.getToken}`;
+            }
+
             fetch('http://localhost:8000/api/types',{
-                headers: {
-                    'Authorization':`Bearer ${this.getToken}`
-                }
+                method: 'GET',
+                headers
             })
                 .then(response => response.json())
                 .then(data => {
