@@ -24,7 +24,7 @@ final class MarkerNoteController extends AbstractController
     }
 
     #[Route('/api/markers/{id}/notes', name: 'marker_add_note', methods: ['POST'])]
-    #[IsGranted('ROLE_REVISOR')]
+    
     public function addNote(Marker $marker, Request $request, EntityManagerInterface $em, Security $security): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -33,7 +33,7 @@ final class MarkerNoteController extends AbstractController
         if(!$noteText){
             return new JsonResponse(['error' => 'Nota buida'], 400);
         }
-
+        
         $note = new MarkerNote();
         $note->setNote($noteText);
         $note->setCreatedAt(new \DateTimeImmutable());
@@ -49,7 +49,8 @@ final class MarkerNoteController extends AbstractController
             'createdAt' => $note->getCreatedAt()->format('Y-m-d H:i:s'),
             'user' => [
                 'id' => $note->getAuthor()->getId(),
-                'nickname' => $note->getAuthor()->getNickname()
+                'nickname' => $note->getAuthor()->getNickname(),
+                'avatar' => $note->getAuthor()->getAvatar(),
             ]
         ], 201);
     }
@@ -68,12 +69,44 @@ final class MarkerNoteController extends AbstractController
                 'createdAt' => $note->getCreatedAt()->format('Y-m-d H:i:s'),
                 'user' => [
                     'id' => $author?->getId(),
-                    'nickname' => $author?->getNickname()
+                    'nickname' => $author?->getNickname(),
+                    'avatar' => $author?->getAvatar(),
                 ]
             ];
         }
 
         return new JsonResponse($data, 200);
     }
+
+    #[Route('/api/notes/all', name: 'marker_get_all_notes', methods: ['GET'])]
+    public function getAllNotes(EntityManagerInterface $em): JsonResponse
+    {
+        $notes = $em->getRepository(MarkerNote::class)
+            ->findBy([], ['createdAt' => 'DESC']);  // Orden descendente por fecha
+
+        $data = [];
+
+        foreach ($notes as $note) {
+            $author = $note->getAuthor();
+            $marker = $note->getMarker();
+            $data[] = [
+                'id' => $note->getId(),
+                'note' => $note->getNote(),
+                'createdAt' => $note->getCreatedAt()->format('Y-m-d H:i:s'),
+                'user' => [
+                    'id' => $author?->getId(),
+                    'nickname' => $author?->getNickname(),
+                    'avatar' => $author?->getAvatar(),
+                ],
+                'marker' => [
+                    'id' => $marker?->getId(),
+                    'title' => $marker?->getTitle(),
+                ],
+            ];
+        }
+
+        return new JsonResponse($data, 200);
+    }
+
 
 }

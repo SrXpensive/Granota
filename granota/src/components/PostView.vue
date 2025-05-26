@@ -15,8 +15,8 @@
                     <h3 class="text-lg font-semibold mt-6 mb-2">Comentaris</h3>
                     <div v-if="comments.length === 0" class="text-gray-500">Encara no hi ha comentaris.</div>
                     <ul class="space-y-2">
-                        <li v-for="(comment,index) in comments" :key="index" class="border-b pb-2">
-                            <strong>{{ comment.user.nickname }}</strong>: {{ comment.note }}
+                        <li v-for="comment in comments" :key="comment.id">
+                            <CommentCard :comment="comment" />
                         </li>
                     </ul>
 
@@ -37,11 +37,15 @@
 
 <script>
     import {mapGetters} from 'vuex'
+    import CommentCard from '@/components/CommentCard.vue'
     export default{
         props: {
             visible: Boolean,
             marker: Object,
             user: Object,
+        },
+        components:{
+            CommentCard
         },
         data(){
             return {
@@ -79,6 +83,7 @@
                     if(!res.ok) throw new Error("No s'han pogut carregar els comentaris")
 
                     this.comments = await res.json();
+                    console.log("Comentarios recibidos:", this.comments);
                 }catch(e){
                     console.error("Error carregant els comentaris", e)
                 }
