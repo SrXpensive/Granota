@@ -12,6 +12,9 @@ import { faEye, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
+import VueSweetalert2 from 'vue-sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
+
 library.add(faEye, faTimes)
 
 const app = createApp(App)
@@ -28,7 +31,12 @@ app.use(Toast, {
 
 app.use(store)
 app.use(router)
+app.use(VueSweetalert2)
 
-store.dispatch('auth/initAuth').then(()=>{
-    app.mount('#app')
+store.dispatch('auth/initAuth')
+  .catch((error)=>{
+    console.error('Error en initAuth: ', error)
+  })
+  .finally(()=>{
+    app.mount('#app') 
 })

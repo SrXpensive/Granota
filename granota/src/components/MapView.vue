@@ -44,7 +44,7 @@
                     <div class="mt-4 flex justify-center space-x-6">
                         <font-awesome-icon @click.stop="$emit('viewPost', marker)" icon="eye" class="cursor-pointer hover:text-blue-800 text-blue-600" title="Veure més" style="font-size: 1.8rem;"/>
                     
-                        <font-awesome-icon v-if="user && (marker.userId === user.id || user.roles.includes('ROLE_ADMIN'))" 
+                        <font-awesome-icon v-if="user && (marker.user.id === user.id || user.roles.includes('ROLE_ADMIN'))" 
                          @click.stop="$emit('delete', marker)" icon="times" class="cursor-pointer text-red-600 hover:text-red-800 ml-3" title="Eliminar marcador" style="font-size: 1.8rem;"/>
                     </div>
                 </l-popup>

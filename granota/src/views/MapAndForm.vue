@@ -11,6 +11,8 @@ import MapView from '@/components/MapView.vue'
 import MarkerForm from '@/components/MarkerForm.vue'
 import PostView from '@/components/PostView.vue'
 import { mapGetters } from 'vuex';
+import { useToast } from 'vue-toastification'
+
 
 export default {
   name: 'MapAndForm',
@@ -110,24 +112,36 @@ export default {
       this.showPostView = true;
     },
     async handleDeleteMarker(marker){
-      if(!confirm('Estàs segur de voler eliminar aquest marcador?')){
-        return;
-      }
+      const toast = useToast();
       try{
-        const response = await fetch(`http://localhost:8000/api/markers/${marker.id}`,{
-          method: 'DELETE',
-          headers: {
-            'Authorization':`Bearer ${this.getToken}`
-          }
-        })
-        if(!response.ok) throw new Error('Error al eliminar marcador');
+        const result = await this.$swal.fire({
+          title: 'Confirmació',
+          text: 'Estàs segur de voler eliminar aquest marcador?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, eliminar',
+          cancelButtonText: 'Cancel·lar'
+        });
 
-        this.markers = this.markers.filter(m => m.id !== marker.id)
+        if(result.isConfirmed){
+          const response = await fetch(`http://localhost:8000/api/markers/${marker.id}`,{
+            method: 'DELETE',
+            headers: {
+              'Authorization':`Bearer ${this.getToken}`
+            }
+          });
+          if(!response.ok) throw new Error('Error al eliminar marcador');
+
+          this.markers = this.markers.filter(m => m.id !== marker.id)
+
+          toast.success('El marcador ha segut eliminat')
+        }
       }catch(error){
         console.error(error.message);
       }
     }
-    
   },
   mounted(){
     setTimeout(()=>{
