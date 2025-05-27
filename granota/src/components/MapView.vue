@@ -89,7 +89,7 @@
         },
         data(){
             return {
-                center: [39.070946540300426, -0.266371446900382],
+                center: [39.057438720653295, -0.2869749069213868],
                 tileUrl: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 tileAttribution: "OpenStreetMap contributors",
                 types: [],
