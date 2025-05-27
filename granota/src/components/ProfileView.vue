@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import {useToast} from 'vue-toastification'
 export default {
     name: 'ProfileView',
     data(){
@@ -73,6 +74,7 @@ export default {
     },
     methods:{
         async uploadAvatar(event) {
+            const toast = useToast();
             const file = event.target.files[0];
             if (!file) return;
 
@@ -80,20 +82,23 @@ export default {
             formData.append('avatar', file);
 
             const token = localStorage.getItem('token');
-
-            const response = await fetch(`http://localhost:8000/api/profile/avatar`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
-                body: formData
-            });
-
-            if (response.ok) {
+            try{
+                const response = await fetch(`http://localhost:8000/api/profile/avatar`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                if(!response.ok){
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Error desconegut al pujar el avatar')
+                }
                 const data = await response.json();
                 this.user.avatar = data.avatar;
-            } else {
-                console.error('Error al subir avatar');
+                toast.success('Avatar pujat amb èxit!')
+            }catch(error){
+                toast.error(error.message)
             }
         }
     }

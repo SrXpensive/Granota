@@ -9,20 +9,21 @@
                     Entrar
                 </button>
             </form>
-            <p v-if="error" class="text-red-500 text-center mt-4">{{ error }}</p>
         </div>
     </div>
 </template>
 
 <script>
 import {mapActions} from 'vuex'
+import {useToast} from 'vue-toastification'
 export default {
     name: "LoginView",
     data(){
         return{
             email:"",
             password:"",
-            error: null   
+            error: null,
+            toast: useToast()   
         }
     },
     methods:{
@@ -31,9 +32,11 @@ export default {
             this.error = null;
             try{
                 await this.login({email: this.email, password: this.password})
+                this.toast.success('Benvingut/da!')
                 this.$router.push('/home/dashboard')
             }catch(err){
                 this.error = err.message;
+                this.toast.error(this.error)
             }
         }
     }

@@ -32,9 +32,14 @@ final class UserController extends AbstractController
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function uploadAvatar(Request $request, SluggerInterface $slugger, EntityManagerInterface $em): JsonResponse
     {
+        $allowedMimeTypes = ['image/jpeg', 'image/png','image/gif','image/webp'];
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $file = $request->files->get('avatar');
+
+        if (!in_array($file->getMimeType(), $allowedMimeTypes)) {
+            return new JsonResponse(['error' => 'El fixer pujat no es una imatge vàlida.'], 400);
+        }
 
         if (!$file) {
             return $this->json(['error' => 'No file uploaded'], 400);

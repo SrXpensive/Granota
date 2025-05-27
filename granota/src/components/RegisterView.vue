@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import {useToast} from 'vue-toastification'
 export default {
     name: "RegisterView",
     data(){
@@ -23,7 +24,8 @@ export default {
             nickname: "",
             email: "",
             password: "",
-            error: null
+            error: null,
+            toast: useToast()
         }
     },
     methods: {
@@ -41,6 +43,7 @@ export default {
                     })
                 });
                 const data = await response.json();
+                this.toast.success('Usuari registrat satisfactoriament!')
                 if(!response.ok){
                     throw new Error(data.error)
                 }
@@ -48,6 +51,7 @@ export default {
                 this.$router.push('/login');
             } catch(err){
                 this.error = err.message;
+                this.toast.error("No s'ha pogut registrar l'usuari correctament")
             }
 
         }

@@ -38,14 +38,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import {useToast} from 'vue-toastification'
 export default{
     name: 'AdminUser',
     data(){
         return{
             users: [],
             loading: false,
-            error: null
+            error: null,
+            toast: useToast()
         }
     },
     computed: {
@@ -88,14 +89,23 @@ export default{
                 })
             
                 if(!res.ok) throw new Error("Error al actualitzar l'usuari")
-                alert('Usuari actualitzat correctament')
+                this.toast.success('Usuari actualitzat correctament')
             }catch(e){
                 alert(e.message)
             }
         },
         async deleteUser(id){
-            if(!confirm('¿Segur que vols eliminar aquest usuari?')) return
-            try{
+            const result = await this.$swal.fire({
+                title: 'Confirmació',
+                text: 'Estàs segur de voler eliminar aquest marcador?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancel·lar'
+            });
+            if(result.isConfirmed){
                 const res = await fetch(`http://localhost:8000/api/admin/users/${id}`,{
                     method: 'DELETE',
                     headers: {
@@ -104,10 +114,10 @@ export default{
                 })
                 if(!res.ok) throw new Error("Error al eliminar l'usuari")
                 this.users = this.users.filter(user => user.id !== id)
-                alert('Usuari eliminat')
-            }catch(e){
-                alert(e.message)
+                this.toast.success('Usuari eliminat')
             }
+                
+            
         }
     },
     mounted(){

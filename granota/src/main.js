@@ -26,11 +26,11 @@ app.use(Toast, {
   timeout: 3000,
   closeOnClick: true,
   pauseOnHover: true,
-  draggable: true,
+  draggable: false,
 })
 
 app.use(store)
-app.use(router)
+
 app.use(VueSweetalert2)
 
 store.dispatch('auth/initAuth')
@@ -38,5 +38,6 @@ store.dispatch('auth/initAuth')
     console.error('Error en initAuth: ', error)
   })
   .finally(()=>{
+    app.use(router)
     app.mount('#app') 
 })
