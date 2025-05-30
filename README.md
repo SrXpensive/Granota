@@ -40,8 +40,11 @@ Per al desplegament amb Docker:
    ```env
    DATABASE_URL="mysql://usuari:contrasenya@127.0.0.1:3306/nom_de_la_base_de_dades"
    ```
-
-4. Des del directori del backend, executa els següents comandaments:
+4. Instal·la les dependències de PHP:
+   ```bash
+   composer require
+   ```  
+5. Des del directori del backend, executa els següents comandaments:
 
    ```bash
    symfony server:start -d               # Inicia el servidor en segon pla
