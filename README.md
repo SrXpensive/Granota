@@ -30,7 +30,7 @@ Per al desplegament amb Docker:
 
    ```bash
    git clone https://exemple.com/repositori.git
-   cd backend
+   cd granota-backend
    ```
 
 2. Crea una base de dades MySQL buida.
@@ -58,7 +58,7 @@ Per al desplegament amb Docker:
 1. Accedeix al directori del frontend:
 
    ```bash
-   cd frontend
+   cd granota
    ```
 
 2. Instal·la les dependències:
