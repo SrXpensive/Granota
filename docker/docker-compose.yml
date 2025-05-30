@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: srxpensive/granota-frontend:v4
+    restart: unless-stopped
+    networks:
+      - internal
+
+  backend-php:
+    image: srxpensive/granota-backend-php:v2
+    restart: unless-stopped
+    environment:
+      APP_SECRET: a40b7e4f644cc17151fba6cf0207e325
+      DATABASE_URL: "mysql://symfony:symfony@db:3306/symfony"
+      DB_HOST: db
+      DB_PORT: 3306
+      JWT_SECRET_KEY: /var/www/html/config/jwt/private.pem
+      JWT_PUBLIC_KEY: /var/www/html/config/jwt/public.pem
+      JWT_PASSPHRASE: e928000a2bdd77f9135a797d9c9a53a100928cbed4ea293b7d6d1f97f26291e6
+    volumes:
+      - uploads:/var/www/html/public/uploads
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./secrets/private.pem:/var/www/html/config/jwt/private.pem:ro
+      - ./secrets/public.pem:/var/www/html/config/jwt/public.pem:ro
+      - ./species.csv:/app/species.csv:ro
+    networks:
+      - internal
+    depends_on:
+      - db
+
+  backend-nginx:
+    image: srxpensive/granota-backend-nginx:v2
+    restart: unless-stopped
+    volumes:
+      - uploads:/var/www/html/public/uploads
+    depends_on:
+      - backend-php
+    networks:
+      - internal
+
+  reverse-proxy:
+    image: srxpensive/granota-proxy:v7
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+      - backend-nginx
+    networks:
+      - internal
+
+  db:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: symfony
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - internal
+
+volumes:
+  uploads:
+  db_data:
+
+networks:
+  internal:
+
